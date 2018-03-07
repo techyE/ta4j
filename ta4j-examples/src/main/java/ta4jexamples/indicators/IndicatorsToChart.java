@@ -40,6 +40,7 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+import ta4jexamples.loaders.CsvLoader;
 import ta4jexamples.loaders.CsvTicksLoader;
 
 /**
@@ -86,7 +87,8 @@ public class IndicatorsToChart {
         /**
          * Getting time series
          */
-        TimeSeries series = CsvTicksLoader.loadAppleIncSeries();
+        CsvLoader newLoader = new CsvTicksLoader("appleinc_ticks_from_20130101_usd.csv");
+        TimeSeries series   = newLoader.getSeries();
 
         /**
          * Creating indicators

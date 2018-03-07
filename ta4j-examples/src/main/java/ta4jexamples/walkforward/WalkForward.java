@@ -61,7 +61,7 @@ public class WalkForward {
 
     public static void main(String[] args) {
         // Splitting the series into slices
-        TimeSeries series = CsvTradesLoader.loadBitstampSeries();
+        TimeSeries series = CsvTradesLoader.loadBitstampSeries("bitstamp_trades_from_20131125_usd.csv");
         List<TimeSeries> subseries = series.split(Period.hours(6), Period.weeks(1));
 
         // Building the map of strategies
