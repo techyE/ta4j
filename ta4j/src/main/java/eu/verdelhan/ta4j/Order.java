@@ -75,6 +75,9 @@ public class Order {
     /** The amount to be (or that was) ordered */
     private Decimal amount = Decimal.NaN;
     
+    /** Is Signal real or was just indicated due to end of trading period*/
+    private boolean artificial = false;
+    
     /**
      * Constructor.
      * @param index the index the order is executed
@@ -91,11 +94,14 @@ public class Order {
      * @param type the type of the order
      * @param price the price for the order
      * @param amount the amount to be (or that was) ordered
+     * @param artificial indicates if trade is real or made up just in order to add last possible calculation.
      */
-    protected Order(int index, OrderType type, Decimal price, Decimal amount) {
+    protected Order(int index, OrderType type, Decimal price, Decimal amount, boolean artificial)
+    {
         this(index, type);
-        this.price = price;
-        this.amount = amount;
+        this.price          = price;
+        this.amount         = amount;
+        this.artificial     = artificial;
     }
 
     /**
@@ -139,6 +145,13 @@ public class Order {
     public Decimal getAmount() {
         return amount;
     }
+    
+    /**
+     * @return Rather order made by a real or an artificial indicator
+     */
+    public boolean getArtificial() {
+        return artificial;
+    }
 
     @Override
     public int hashCode() {
@@ -171,12 +184,15 @@ public class Order {
         if (this.amount != other.amount && (this.amount == null || !this.amount.equals(other.amount))) {
             return false;
         }
+        if (this.artificial != other.artificial) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "Order{" + "type=" + type + ", index=" + index + ", price=" + price + ", amount=" + amount + '}';
+        return "Order{" + "type=" + type + ", index=" + index + ", price=" + price + ", amount=" + amount + ", artificial=" + artificial + '}';
     }
     
     /**
@@ -194,7 +210,7 @@ public class Order {
      * @return a BUY order
      */
     public static Order buyAt(int index, Decimal price, Decimal amount) {
-        return new Order(index, OrderType.BUY, price, amount);
+        return new Order(index, OrderType.BUY, price, amount , false);
     }
 
     /**
@@ -212,6 +228,6 @@ public class Order {
      * @return a SELL order
      */
     public static Order sellAt(int index, Decimal price, Decimal amount) {
-        return new Order(index, OrderType.SELL, price, amount);
+        return new Order(index, OrderType.SELL, price, amount , false);
     }
 }

@@ -25,6 +25,8 @@ package eu.verdelhan.ta4j;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Immutable, arbitrary-precision signed decimal numbers designed for technical analysis.
@@ -138,8 +140,12 @@ public final class Decimal implements Comparable<Decimal> {
      * @see BigDecimal#divide(java.math.BigDecimal, java.math.MathContext)
      */
     public Decimal dividedBy(Decimal divisor) {
-        if ((this == NaN) || (divisor == NaN) || divisor.isZero()) {
-            return NaN;
+        if ((this == NaN) || (divisor == NaN))
+            return Decimal.NaN;
+
+        if (divisor.isZero()) {
+            Logger.getLogger(Decimal.class.getName()).log(Level.INFO,"Division by 0: " + delegate +"/"+ divisor);
+            return Decimal.ZERO; 
         }
         return new Decimal(delegate.divide(divisor.delegate, MATH_CONTEXT));
     }
@@ -152,8 +158,12 @@ public final class Decimal implements Comparable<Decimal> {
      * @see BigDecimal#remainder(java.math.BigDecimal, java.math.MathContext)
      */
     public Decimal remainder(Decimal divisor) {
-        if ((this == NaN) || (divisor == NaN) || divisor.isZero()) {
-            return NaN;
+        if ((this == NaN) || (divisor == NaN))
+            return Decimal.NaN;
+
+        if (divisor.isZero()) {
+            Logger.getLogger(Decimal.class.getName()).log(Level.INFO,"Division by 0: " + delegate +"/"+ divisor);
+            return Decimal.ZERO;
         }
         return new Decimal(delegate.remainder(divisor.delegate, MATH_CONTEXT));
     }
