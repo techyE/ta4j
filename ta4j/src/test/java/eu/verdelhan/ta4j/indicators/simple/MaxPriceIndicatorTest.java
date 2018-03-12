@@ -35,7 +35,7 @@ public class MaxPriceIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         maxPriceIndicator = new MaxPriceIndicator(timeSeries);
 
     }

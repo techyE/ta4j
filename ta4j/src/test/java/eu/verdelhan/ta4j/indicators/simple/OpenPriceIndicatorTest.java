@@ -35,7 +35,7 @@ public class OpenPriceIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         openPriceIndicator = new OpenPriceIndicator(timeSeries);
     }
 

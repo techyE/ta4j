@@ -36,7 +36,7 @@ public class VolumeIndicatorTest {
 
     @Test
     public void indicatorShouldRetrieveTickVolume() {
-        TimeSeries series = new MockTimeSeries();
+        TimeSeries series = new MockTimeSeries(30);
         VolumeIndicator volumeIndicator = new VolumeIndicator(series);
         for (int i = 0; i < 10; i++) {
             assertEquals(volumeIndicator.getValue(i), series.getTick(i).getVolume());
