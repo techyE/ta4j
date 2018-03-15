@@ -38,7 +38,8 @@ lazy val ta4j = (project in file("ta4j"))
     libraryDependencies += timeLib,
     libraryDependencies ++= logLib,
     libraryDependencies ++= testsLib,
-    libraryDependencies += mathLib)
+    libraryDependencies += mathLib,
+    libraryDependencies ++= chartsLib)
 .settings(projectSettings)
 
 lazy val ta4jExamples = (project in file("ta4j-examples"))
