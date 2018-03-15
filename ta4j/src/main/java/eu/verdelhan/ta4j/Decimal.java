@@ -144,7 +144,14 @@ public final class Decimal implements Comparable<Decimal> {
             return Decimal.NaN;
 
         if (divisor.isZero()) {
-            Logger.getLogger(Decimal.class.getName()).log(Level.INFO,"Division by 0: " + delegate +"/"+ divisor);
+            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+            StackTraceElement e;
+            String methodName = "";
+            for (int i = 2 ; i<6 ; i++) {
+                e = stacktrace[i];
+                methodName = methodName + " " + e.getMethodName();
+            }
+            Logger.getLogger(Decimal.class.getName()).log(Level.INFO,"Division by 0: " + delegate +"/"+ divisor + " Caller functions: " + methodName);
             return Decimal.ZERO; 
         }
         return new Decimal(delegate.divide(divisor.delegate, MATH_CONTEXT));
@@ -162,7 +169,14 @@ public final class Decimal implements Comparable<Decimal> {
             return Decimal.NaN;
 
         if (divisor.isZero()) {
-            Logger.getLogger(Decimal.class.getName()).log(Level.INFO,"Division by 0: " + delegate +"/"+ divisor);
+            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+            StackTraceElement e;
+            String methodName = "";
+            for (int i = 2 ; i<6 ; i++) {
+                e = stacktrace[i];
+                methodName = methodName + e.getMethodName();
+            }
+            Logger.getLogger(Decimal.class.getName()).log(Level.INFO,"Division by 0: " + delegate +"/"+ divisor + " Caller function: " + methodName);
             return Decimal.ZERO;
         }
         return new Decimal(delegate.remainder(divisor.delegate, MATH_CONTEXT));
