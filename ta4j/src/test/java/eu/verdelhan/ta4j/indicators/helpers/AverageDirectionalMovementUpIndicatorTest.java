@@ -23,6 +23,8 @@
 package eu.verdelhan.ta4j.indicators.helpers;
 
 import static eu.verdelhan.ta4j.TATestsUtils.assertDecimalEquals;
+
+import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.indicators.helpers.AverageDirectionalMovementUpIndicator;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.mocks.MockTick;
@@ -46,10 +48,10 @@ public class AverageDirectionalMovementUpIndicatorTest {
         
         MockTimeSeries series = new MockTimeSeries(ticks);
         AverageDirectionalMovementUpIndicator admup = new AverageDirectionalMovementUpIndicator(series, 3);
-        assertDecimalEquals(admup.getValue(0), 1);
-        assertDecimalEquals(admup.getValue(1), 4d/3);
-        assertDecimalEquals(admup.getValue(2), 4d/3 * 2d/3 + 1);
-        assertDecimalEquals(admup.getValue(3), (4d/3 * 2d/3 + 1) * 2d/3);
-        assertDecimalEquals(admup.getValue(4), (4d/3 * 2d/3 + 1) * 2d/3 * 2d/3 + 2d/3);
+        assertDecimalEquals(admup.getValue(0), 0);
+        assertDecimalEquals(admup.getValue(1), 2d/3);
+        assertDecimalEquals(admup.getValue(2), (((2d/3)*2) + 3)/3);
+        assertDecimalEquals(admup.getValue(3), ((admup.getValue(2).toDouble() * 2) +0)/3);
+        assertDecimalEquals(admup.getValue(4), ((admup.getValue(3).toDouble()*2)+2)/3);
     }
 }

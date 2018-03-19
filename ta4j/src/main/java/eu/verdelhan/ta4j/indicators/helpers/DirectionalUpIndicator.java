@@ -22,35 +22,42 @@
  */
 package eu.verdelhan.ta4j.indicators.helpers;
 
-import eu.verdelhan.ta4j.Indicator;
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.CachedIndicator;
 
 /**
- * Directional up indicator.
  * <p>
+ * Name: Directional up indicator.    <br>
+ * Indicator Sign: DI+                <br>
+ * Type: Lagging.
+ * </p>
  */
 public class DirectionalUpIndicator extends CachedIndicator<Decimal>{
 
-    private final Indicator<Decimal> admup;
-    private final Indicator<Decimal> atr;
-    private int timeFrame;
+    private final AverageDirectionalMovementUpIndicator ADMUpIndicator;
+    private final AverageTrueRangeIndicator ATRIndicator;
+    private final int timeFrame;
 
     public DirectionalUpIndicator(TimeSeries series, int timeFrame) {
         super(series);
-        this.admup = new AverageDirectionalMovementUpIndicator(series, timeFrame);
-        this.atr = new AverageTrueRangeIndicator(series, timeFrame);
-        this.timeFrame = timeFrame;
+        this.ATRIndicator           = new AverageTrueRangeIndicator(series,timeFrame);
+        this.ADMUpIndicator         = new AverageDirectionalMovementUpIndicator(series,timeFrame);
+        this.timeFrame  		    = timeFrame;
     }
 
     @Override
     protected Decimal calculate(int index) {
-        return admup.getValue(index).dividedBy(atr.getValue(index));
+        return ADMUpIndicator.getValue(index).dividedBy(ATRIndicator.getValue(index)).multipliedBy(Decimal.HUNDRED);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " timeFrame: " + timeFrame;
+        return getClass().getSimpleName() + " " + timeFrame;
+    }
+
+    public int getTimeFrame()
+    {
+        return timeFrame;
     }
 }

@@ -25,30 +25,29 @@ package eu.verdelhan.ta4j.indicators.helpers;
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.RecursiveCachedIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.WilderSmoothIndicator;
 
 /**
  * Average of {@link DirectionalMovementDownIndicator directional movement down indicator}.
  * <p>
  */
 public class AverageDirectionalMovementDownIndicator extends RecursiveCachedIndicator<Decimal> {
-    private final int timeFrame;
 
-    private final DirectionalMovementDownIndicator dmdown;
+    private final WilderSmoothIndicator ADMDownIndicator;
 
     public AverageDirectionalMovementDownIndicator(TimeSeries series, int timeFrame) {
         super(series);
-        this.timeFrame = timeFrame;
-        dmdown = new DirectionalMovementDownIndicator(series);
+        DirectionalMovementDownIndicator dmdown = new DirectionalMovementDownIndicator(series);
+        this.ADMDownIndicator = new WilderSmoothIndicator(dmdown, timeFrame);
+    }
+
+    public AverageDirectionalMovementDownIndicator(DirectionalMovementDownIndicator dmdown, int timeFrame) {
+        super(dmdown);
+        this.ADMDownIndicator = new WilderSmoothIndicator(dmdown, timeFrame);
     }
 
     @Override
     protected Decimal calculate(int index) {
-        if (index == 0) {
-            return Decimal.ONE;
-        }
-        Decimal nbPeriods = Decimal.valueOf(timeFrame);
-        Decimal nbPeriodsMinusOne = Decimal.valueOf(timeFrame - 1);
-        return getValue(index - 1).multipliedBy(nbPeriodsMinusOne).dividedBy(nbPeriods).plus(dmdown.getValue(index).dividedBy(nbPeriods));
-
+        return ADMDownIndicator.getValue(index);
     }
 }

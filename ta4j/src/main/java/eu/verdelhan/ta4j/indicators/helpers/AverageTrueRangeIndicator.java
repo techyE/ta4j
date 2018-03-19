@@ -25,6 +25,7 @@ package eu.verdelhan.ta4j.indicators.helpers;
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.RecursiveCachedIndicator;
+import eu.verdelhan.ta4j.indicators.trackers.WilderSmoothIndicator;
 
 /**
  * Average true range indicator.
@@ -32,22 +33,21 @@ import eu.verdelhan.ta4j.indicators.RecursiveCachedIndicator;
  */
 public class AverageTrueRangeIndicator extends RecursiveCachedIndicator<Decimal> {
 
-    private final int timeFrame;
-    private final TrueRangeIndicator tr;
+    private final WilderSmoothIndicator atr;
 
     public AverageTrueRangeIndicator(TimeSeries series, int timeFrame) {
         super(series);
-        this.timeFrame = timeFrame;
-        this.tr = new TrueRangeIndicator(series);
+        TrueRangeIndicator tr = new TrueRangeIndicator(series);
+        this.atr = new WilderSmoothIndicator(tr, timeFrame);
     }
-    
+
+    public AverageTrueRangeIndicator(TrueRangeIndicator trueRange, int timeFrame) {
+        super(trueRange);
+        this.atr = new WilderSmoothIndicator(trueRange, timeFrame);
+    }
+
     @Override
     protected Decimal calculate(int index) {
-        if (index == 0) {
-            return Decimal.ONE;
-        }
-        Decimal nbPeriods = Decimal.valueOf(timeFrame);
-        Decimal nbPeriodsMinusOne = Decimal.valueOf(timeFrame - 1);
-        return getValue(index - 1).multipliedBy(nbPeriodsMinusOne).plus(tr.getValue(index)).dividedBy(nbPeriods);
+        return atr.getValue(index);
     }
 }
