@@ -35,7 +35,7 @@ public class MinPriceIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         minPriceIndicator = new MinPriceIndicator(timeSeries);
     }
 

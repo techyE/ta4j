@@ -38,7 +38,7 @@ public class PriceVariationIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         variationIndicator = new PriceVariationIndicator(timeSeries);
     }
 

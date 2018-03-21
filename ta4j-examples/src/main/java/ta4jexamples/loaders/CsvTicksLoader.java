@@ -22,63 +22,36 @@
  */
 package ta4jexamples.loaders;
 
-import au.com.bytecode.opencsv.CSVReader;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.Tick;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.joda.time.DateTime;
 
 /**
  * This class build a Ta4j time series from a CSV file containing ticks.
  */
-public class CsvTicksLoader {
+public class CsvTicksLoader extends AbstractCsvLoader{
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * @return a time series from Apple Inc. ticks.
-     */
-    public static TimeSeries loadAppleIncSeries() {
+    private TimeSeries series;
 
-        InputStream stream = CsvTicksLoader.class.getClassLoader().getResourceAsStream("appleinc_ticks_from_20130101_usd.csv");
-
-        List<Tick> ticks = new ArrayList<Tick>();
-
-        CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"', 1);
-        try {
-            String[] line;
-            while ((line = csvReader.readNext()) != null) {
-                DateTime date = new DateTime(DATE_FORMAT.parse(line[0]));
-                double open = Double.parseDouble(line[1]);
-                double high = Double.parseDouble(line[2]);
-                double low = Double.parseDouble(line[3]);
-                double close = Double.parseDouble(line[4]);
-                double volume = Double.parseDouble(line[5]);
-
-                ticks.add(new Tick(date, open, high, low, close, volume));
-            }
-        } catch (IOException ioe) {
-            Logger.getLogger(CsvTicksLoader.class.getName()).log(Level.SEVERE, "Unable to load ticks from CSV", ioe);
-        } catch (ParseException pe) {
-            Logger.getLogger(CsvTicksLoader.class.getName()).log(Level.SEVERE, "Error while parsing date", pe);
-        } catch (NumberFormatException nfe) {
-            Logger.getLogger(CsvTicksLoader.class.getName()).log(Level.SEVERE, "Error while parsing value", nfe);
-        }
-
-        return new TimeSeries("apple_ticks", ticks);
+    public CsvTicksLoader(String path) {
+        InputStream streamLoader                = loadStream(path);
+        List<Tick> ticks                        = loadYahooHistTicks(streamLoader);
+        this.series                             = new TimeSeries("Stock Ticks", ticks);
     }
 
+
+    @Override
+    public TimeSeries getSeries() {
+        return series;
+    }
+
+
+
     public static void main(String args[]) {
-        TimeSeries series = CsvTicksLoader.loadAppleIncSeries();
+        CsvLoader newLoader = new CsvTicksLoader("appleinc_ticks_from_20130101_usd.csv");
+        TimeSeries series   = newLoader.getSeries();
 
         System.out.println("Series: " + series.getName() + " (" + series.getSeriesPeriodDescription() + ")");
         System.out.println("Number of ticks: " + series.getTickCount());

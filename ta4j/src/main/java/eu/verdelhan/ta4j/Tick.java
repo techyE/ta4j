@@ -61,9 +61,9 @@ public class Tick {
     public Tick(Period timePeriod, DateTime endTime) {
         checkTimeArguments(timePeriod, endTime);
         this.timePeriod = timePeriod;
-        this.endTime = endTime;
-        this.beginTime = endTime.minus(timePeriod);
-    }
+        this.endTime    = endTime;
+        this.beginTime  = endTime.minus(timePeriod);
+    }   
 
     /**
      * Constructor.
@@ -163,6 +163,34 @@ public class Tick {
     }
 
     /**
+     * @return the min price of the period
+     */
+    public Decimal getMinPrice() {
+        return minPrice;
+    }
+
+    /**
+     * @return the time period of the tick
+     */
+    public Period getTimePeriod() {
+        return timePeriod;
+    }
+
+    /**
+     * @return the begin timestamp of the tick period
+     */
+    public DateTime getBeginTime() {
+        return beginTime;
+    }
+
+    /**
+     * @return the end timestamp of the tick period
+     */
+    public DateTime getEndTime() {
+        return endTime;
+    }
+
+    /**
      * @return the whole traded amount of the period
      */
     public Decimal getAmount() {
@@ -175,6 +203,56 @@ public class Tick {
     public Decimal getVolume() {
         return volume;
     }
+
+    /**
+     * @return a human-friendly string of the end timestamp
+     */
+    public String getDateName() {
+        return endTime.toString("hh:mm dd/MM/yyyy");
+    }
+
+    /**
+     * @return a even more human-friendly string of the end timestamp
+     */
+    public String getSimpleDateName() {
+        return endTime.toString("dd/MM/yyyy");
+    }
+
+    /**
+     * Set the close price of the period
+     */
+    public void setClosePrice(Decimal closePrice) {
+        this.closePrice = closePrice;
+    }
+
+    /**
+     * Set the open price of the period
+     */
+    public void setOpenPrice(Decimal openPrice) {
+        this.openPrice = openPrice;
+    }
+
+    /**
+     * Set the max price of the period
+     */
+    public void setMaxPrice(Decimal maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+    /**
+     * Set the min price of the period
+     */
+    public void setMinPrice(Decimal minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    /**
+     * Set the whole traded volume in the period
+     */
+    public void setVolume(Decimal volume) {
+        this.volume = volume;
+    }
+
+    //===============================================
 
     /**
      * Adds a trade at the end of tick period.
@@ -220,34 +298,6 @@ public class Tick {
         trades++;
     }
 
-    /**
-     * @return the min price of the period
-     */
-    public Decimal getMinPrice() {
-        return minPrice;
-    }
-
-    /**
-     * @return the time period of the tick
-     */
-    public Period getTimePeriod() {
-        return timePeriod;
-    }
-
-    /**
-     * @return the begin timestamp of the tick period
-     */
-    public DateTime getBeginTime() {
-        return beginTime;
-    }
-
-    /**
-     * @return the end timestamp of the tick period
-     */
-    public DateTime getEndTime() {
-        return endTime;
-    }
-
     @Override
     public String toString() {
         return String.format("[time: %1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS, close price: %2$f]",
@@ -276,20 +326,6 @@ public class Tick {
      */
     public boolean isBullish() {
         return (openPrice != null) && (closePrice != null) && openPrice.isLessThan(closePrice);
-    }
-    
-    /**
-     * @return a human-friendly string of the end timestamp
-     */
-    public String getDateName() {
-        return endTime.toString("hh:mm dd/MM/yyyy");
-    }
-
-    /**
-     * @return a even more human-friendly string of the end timestamp
-     */
-    public String getSimpleDateName() {
-        return endTime.toString("dd/MM/yyyy");
     }
 
     /**

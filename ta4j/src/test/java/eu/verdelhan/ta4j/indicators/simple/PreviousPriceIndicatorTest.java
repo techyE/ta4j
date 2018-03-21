@@ -35,7 +35,7 @@ public class PreviousPriceIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         previousPriceIndicator = new PreviousPriceIndicator(timeSeries);
 
     }

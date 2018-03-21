@@ -52,10 +52,10 @@ public class AverageDirectionalMovementDownIndicatorTest {
         
         MockTimeSeries series = new MockTimeSeries(ticks);
         AverageDirectionalMovementDownIndicator admdown = new AverageDirectionalMovementDownIndicator(series, 3);
-        assertDecimalEquals(admdown.getValue(0), 1);
-        assertDecimalEquals(admdown.getValue(1), 4d/3);
-        assertDecimalEquals(admdown.getValue(2), 4d/3 * 2d/3);
-        assertDecimalEquals(admdown.getValue(3), (4d/3 * 2d/3) * 2d/3 + 1d/3);
-        assertDecimalEquals(admdown.getValue(4), ((4d/3 * 2d/3) * 2d/3 + 1d/3) * 2d/3 + 1.8 * 1d/3);
+        assertDecimalEquals(admdown.getValue(0), 0);
+        assertDecimalEquals(admdown.getValue(1), 0 + 2d/3);
+        assertDecimalEquals(admdown.getValue(2), (2d/3 * 2)/3);
+        assertDecimalEquals(admdown.getValue(3), ((((2d/3 * 2)/3)*2) + 1d)/3);
+        assertDecimalEquals(admdown.getValue(4), (((((((2d/3 * 2)/3)*2) + 1d)/3)*2) + 1.8)/3);
     }
 }

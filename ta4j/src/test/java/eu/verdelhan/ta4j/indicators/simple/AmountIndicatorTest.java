@@ -36,7 +36,7 @@ public class AmountIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         amountIndicator = new AmountIndicator(timeSeries);
     }
 

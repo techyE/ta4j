@@ -38,7 +38,7 @@ public class TypicalPriceIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         typicalPriceIndicator = new TypicalPriceIndicator(timeSeries);
     }
 

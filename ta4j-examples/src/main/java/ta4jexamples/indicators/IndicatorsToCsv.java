@@ -51,7 +51,7 @@ public class IndicatorsToCsv {
         /**
          * Getting time series
          */
-        TimeSeries series = CsvTradesLoader.loadBitstampSeries();
+        TimeSeries series = CsvTradesLoader.loadBitstampSeries("bitstamp_trades_from_20131125_usd.csv");
 
         /**
          * Creating indicators

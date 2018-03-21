@@ -55,14 +55,32 @@ public class Strategy {
      * @param entryRule the entry rule
      * @param exitRule the exit rule
      */
-    public Strategy(Rule entryRule, Rule exitRule) {
-        if (entryRule == null || exitRule == null) {
+    public Strategy(Rule entryRule, Rule exitRule)
+    {
+        if (entryRule == null || exitRule == null)
             throw new IllegalArgumentException("Rules cannot be null");
-        }
-        this.entryRule = entryRule;
-        this.exitRule = exitRule;
+
+        this.entryRule      = entryRule;
+        this.exitRule       = exitRule;
+        this.unstablePeriod = 0;
     }
-    
+
+    /**
+     * Constructor.
+     * @param entryRule the entry rule
+     * @param exitRule the exit rule
+     * @param unstablePeriod Indicates the first tick strategy starts from.
+     */
+    public Strategy(Rule entryRule, Rule exitRule, int unstablePeriod)
+    {
+        if (entryRule == null || exitRule == null)
+            throw new IllegalArgumentException("Rules cannot be null");
+
+        this.entryRule      = entryRule;
+        this.exitRule       = exitRule;
+        this.unstablePeriod = unstablePeriod;
+    }
+
     /**
      * @param index a tick index
      * @return true if this strategy is unstable at the provided index, false otherwise (stable)
@@ -74,10 +92,18 @@ public class Strategy {
     /**
      * @param unstablePeriod number of ticks that will be strip off for this strategy
      */
-    public void setUnstablePeriod(int unstablePeriod) {
+    public void setUnstablePeriod(int unstablePeriod)
+    {
         this.unstablePeriod = unstablePeriod;
     }
-    
+
+    /**
+     * Resetes unstable period of strategy.
+     */
+    public void clearUnstablePeriod() {
+        this.unstablePeriod = 0;
+    }
+
     /**
      * @param index the tick index
      * @param tradingRecord the potentially needed trading history
@@ -154,4 +180,20 @@ public class Strategy {
     protected void traceShouldExit(int index, boolean exit) {
         log.trace(">>> {}#shouldExit({}): {}", getClass().getSimpleName(), index, exit);
     }
+    
+    /*
+     * Get the entry Rule of a strategy.
+     */
+    public Rule getEntryRule()
+    {
+        return entryRule;
+    }
+
+    /**
+     * Get the unstable period of Strategy.
+     */
+    public int getUnstablePeriod() {
+        return unstablePeriod;
+    }
+    
 }

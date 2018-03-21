@@ -100,7 +100,7 @@ public class TimeSeries {
      * @param timePeriod the time period (between 2 ticks)
      */
     public TimeSeries(Period timePeriod) {
-        this("unamed", timePeriod);
+        this("unnamed", timePeriod);
     }
 
     /**
@@ -114,7 +114,7 @@ public class TimeSeries {
     private TimeSeries(String name, List<Tick> ticks, int beginIndex, int endIndex, boolean subSeries) {
         // TODO: add null checks and out of bounds checks
         if (endIndex < beginIndex - 1) {
-            throw new IllegalArgumentException("end cannot be < than begin - 1");
+            throw new IllegalArgumentException("Series end cannot be bigger than begin - 1");
         }
         this.name = name;
         this.ticks = ticks;
@@ -199,7 +199,7 @@ public class TimeSeries {
     public String getSeriesPeriodDescription() {
         StringBuilder sb = new StringBuilder();
         if (!ticks.isEmpty()) {
-            final String timeFormat = "hh:mm dd/MM/yyyy";
+            final String timeFormat = "hh:mm:ss dd/MM/yyyy";
             Tick firstTick = getFirstTick();
             Tick lastTick = getLastTick();
             sb.append(firstTick.getEndTime().toString(timeFormat))
@@ -328,27 +328,26 @@ public class TimeSeries {
     }
 
     /**
-     * Splits the time series into sub-series containing nbTicks ticks each.<br>
-     * The current time series is splitted every nbTicks ticks.<br>
-     * The last sub-series may have less ticks than nbTicks.
+     * <p>Splits the time series into sub-series containing nbTicks ticks each.<br>
+     * The current time series is split every nbTicks ticks.<br>
+     * The last sub-series may have less ticks than nbTicks.</p>
      * @param nbTicks the number of ticks of each sub-series
      * @return a list of sub-series
      */
     public List<TimeSeries> split(int nbTicks) {
-        ArrayList<TimeSeries> subseries = new ArrayList<TimeSeries>();
-        for (int i = beginIndex; i <= endIndex; i += nbTicks) {
+        ArrayList<TimeSeries> subseries = new ArrayList<>();
+        for (int tick = beginIndex; tick <= endIndex; tick += nbTicks) {
             // For each nbTicks ticks
-            int subseriesBegin = i;
-            int subseriesEnd = Math.min(subseriesBegin + nbTicks - 1, endIndex);
-            subseries.add(subseries(subseriesBegin, subseriesEnd));
+            int subseriesEnd = Math.min(tick + nbTicks - 1, endIndex);
+            subseries.add(subseries(tick, subseriesEnd));
         }
         return subseries;
     }
 
     /**
-     * Splits the time series into sub-series lasting sliceDuration.<br>
-     * The current time series is splitted every splitDuration.<br>
-     * The last sub-series may last less than sliceDuration.
+     * <p>Splits the time series into sub-series lasting sliceDuration.<br>
+     * The current time series is split every splitDuration.<br>
+     * The last sub-series may last less than sliceDuration.</p>
      * @param splitDuration the duration between 2 splits
      * @param sliceDuration the duration of each sub-series
      * @return a list of sub-series
@@ -368,7 +367,7 @@ public class TimeSeries {
 
     /**
      * Splits the time series into sub-series lasting duration.<br>
-     * The current time series is splitted every duration.<br>
+     * The current time series is split every duration.<br>
      * The last sub-series may last less than duration.
      * @param duration the duration between 2 splits (and of each sub-series)
      * @return a list of sub-series
@@ -378,9 +377,8 @@ public class TimeSeries {
     }
 
     /**
-     * Runs the strategy over the series.
-     * <p>
-     * Opens the trades with {@link OrderType.BUY} orders.
+     * <p>Runs the strategy over the series.<br>
+     * Opens the trades with {@link OrderType} orders.</p>
      * @param strategy the trading strategy
      * @return the trading record coming from the run
      */
@@ -389,9 +387,8 @@ public class TimeSeries {
     }
 
     /**
-     * Runs the strategy over the series.
-     * <p>
-     * Opens the trades with {@link OrderType.BUY} orders.
+     * <p>Runs the strategy over the series.<br>
+     * Opens the trades with {@link OrderType} orders.</p>
      * @param strategy the trading strategy
      * @param orderType the {@link OrderType} used to open the trades
      * @return the trading record coming from the run
@@ -419,17 +416,11 @@ public class TimeSeries {
             }
         }
 
-        if (!tradingRecord.isClosed()) {
-            // If the last trade is still opened, we search out of the end index.
-            // May works if the current series is a sub-series (but not the last sub-series).
-            for (int i = endIndex + 1; i < ticks.size(); i++) {
-                // For each tick out of sub-series bound...
-                // --> Trying to close the last trade
-                if (strategy.shouldOperate(i, tradingRecord)) {
-                    tradingRecord.operate(i, ticks.get(i).getClosePrice(), amount);
-                    break;
-                }
-            }
+        // After all ticks have been analyzed, check if there is an open trade
+        if (!tradingRecord.isClosed())
+        {   
+            // Add closure to an open trade (TBD: Delete when leaving trades open is possible - meanwhile use artificial trade)
+            tradingRecord.operate(ticks.size()-1, null, null , true);
         }
         return tradingRecord;
     }

@@ -28,24 +28,31 @@ import eu.verdelhan.ta4j.mocks.MockTick;
 import eu.verdelhan.ta4j.mocks.MockTimeSeries;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 
 public class AverageTrueRangeIndicatorTest {
 
-    @Test
-    public void getValue() {
+    private AverageTrueRangeIndicator atr = null;
+
+    @Before
+    public void setUp() {
         List<Tick> ticks = new ArrayList<Tick>();
         ticks.add(new MockTick(0, 12, 15, 8));
         ticks.add(new MockTick(0, 8, 11, 6));
         ticks.add(new MockTick(0, 15, 17, 14));
         ticks.add(new MockTick(0, 15, 17, 14));
         ticks.add(new MockTick(0, 0, 0, 2));
-        AverageTrueRangeIndicator atr = new AverageTrueRangeIndicator(new MockTimeSeries(ticks), 3);
-        
-        assertDecimalEquals(atr.getValue(0), 1);
-        assertDecimalEquals(atr.getValue(1), 8d/3);
-        assertDecimalEquals(atr.getValue(2), 8d/3 * 2d/3 + 3);
-        assertDecimalEquals(atr.getValue(3), (8d/3 * 2d/3 + 3) * 2d/3 + 1);
-        assertDecimalEquals(atr.getValue(4), ((8d/3 * 2d/3 + 3) * 2d/3 + 1) * 2d/3 + 15d/3);
+        atr = new AverageTrueRangeIndicator(new MockTimeSeries(ticks), 3);
+    }
+
+    @Test
+    public void getValue() {
+        assertDecimalEquals(atr.getValue(0), 7);
+        assertDecimalEquals(atr.getValue(1), ((7d*2d) + 6d)/3);
+        assertDecimalEquals(atr.getValue(2), ((((7d*2d) + 6d)/3)*2+9)/3);
+        assertDecimalEquals(atr.getValue(3), (atr.getValue(2).toDouble()*2+3)/3);
+        assertDecimalEquals(atr.getValue(4), (atr.getValue(3).toDouble()*2+15)/3);
     }
 }

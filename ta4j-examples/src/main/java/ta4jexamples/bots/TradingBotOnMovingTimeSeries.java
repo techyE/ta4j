@@ -50,7 +50,7 @@ public class TradingBotOnMovingTimeSeries {
      * @return a moving time series
      */
     private static TimeSeries initMovingTimeSeries(int maxTickCount) {
-        TimeSeries series = CsvTradesLoader.loadBitstampSeries();
+        TimeSeries series = CsvTradesLoader.loadBitstampSeries("bitstamp_trades_from_20131125_usd");
         System.out.print("Initial tick count: " + series.getTickCount());
         // Limitating the number of ticks to maxTickCount
         series.setMaximumTickCount(maxTickCount);

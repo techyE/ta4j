@@ -26,6 +26,8 @@ import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.joda.time.DateTime;
 
 /**
@@ -33,10 +35,18 @@ import org.joda.time.DateTime;
  */
 public class MockTimeSeries extends TimeSeries {
 
+    /**
+     * <p>Generate timeSeries with given closePrices.</p>
+     * @param data closePrices for timeSeries.
+     */
     public MockTimeSeries(double... data) {
         super(doublesToTicks(data));
     }
 
+    /**
+     * <p>Generate timeSeries with given Ticks.</p>
+     * @param ticks Ticks for timeSeries.
+     */
     public MockTimeSeries(List<Tick> ticks) {
         super(ticks);
     }
@@ -49,9 +59,25 @@ public class MockTimeSeries extends TimeSeries {
         super(timesToTicks(dates));
     }
 
-    public MockTimeSeries() {
-        super(arbitraryTicks());
+    /**
+     * <p>Generate random ticks with a specific seed</p>
+     * @param numOfTicks number of generated ticks.
+     * @param seed Number used for Random Generator.
+     */
+    public MockTimeSeries(int numOfTicks, long seed)
+    {
+        super(arbitraryTicks(numOfTicks, seed));
     }
+
+    /**
+     * <p>Generate random TimeSeries</p>
+     * @param numOfTicks number of generated ticks.
+     */
+    public MockTimeSeries(int numOfTicks) {
+        super(arbitraryTicks(numOfTicks));
+    }
+
+    //========================================================================
 
     private static List<Tick> doublesToTicks(double... data) {
         ArrayList<Tick> ticks = new ArrayList<Tick>();
@@ -81,11 +107,43 @@ public class MockTimeSeries extends TimeSeries {
         return ticks;
     }
 
-    private static List<Tick> arbitraryTicks() {
-        ArrayList<Tick> ticks = new ArrayList<Tick>();
-        for (double i = 0d; i < 10; i++) {
-            ticks.add(new MockTick(new DateTime(0), i, i + 1, i + 2, i + 3, i + 4, i + 5, (int) (i + 6)));
+    /**
+     *<p>Generate random ticks with a specific seed</p>
+     *
+     * @param numOfTicks Number of generated ticks.
+     * @param seed Number used for Random Generator.
+     * @return List of Ticks.
+     */
+    private static List<Tick> arbitraryTicks(int numOfTicks, long seed)
+    {
+        System.out.println("Random seed is: " + seed);  // Print seed to prevent confusion with other func.
+        ArrayList<Tick> ticks   = new ArrayList<Tick>();
+        Random rand             = new Random(seed);
+        // Random value between 50 and 300
+        double randomValClose   = 50 + 299*rand.nextDouble();
+        double randomVolume     = 10000 + 40000*rand.nextDouble();
+        for (double i = 0d; i < numOfTicks; i++)
+        {
+            // Random wave movement of -4 until + 4
+            randomValClose          = randomValClose + ((8)*rand.nextDouble() - 4);
+            double randomValMax     = randomValClose + 3*rand.nextDouble();
+            double randomValMin     = randomValClose - 3*rand.nextDouble();
+            double randomValOpen    = randomValMin + (randomValMax-randomValMin)*rand.nextDouble();
+            randomVolume            = randomVolume + ((16000)*rand.nextDouble() - 8000);
+            ticks.add(new MockTick(new DateTime(0), randomValOpen, randomValClose, randomValMax, randomValMin, i + 4, randomVolume, (int) (i + 6)));
         }
         return ticks;
+    }
+
+    /**
+     *<p>Generate random ticks</p>
+     *
+     * @param numOfTicks Number of generated ticks.
+     * @return List of Ticks.
+     */
+    private static List<Tick> arbitraryTicks(int numOfTicks)
+    {
+        long seed = System.currentTimeMillis();
+        return arbitraryTicks(numOfTicks, seed);
     }
 }

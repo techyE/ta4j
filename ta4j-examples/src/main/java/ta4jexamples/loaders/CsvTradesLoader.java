@@ -37,56 +37,53 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 
+import static ta4jexamples.loaders.CsvFileLoader.loadFileCSV;
+
+
 /**
  * This class build a Ta4j time series from a CSV file containing trades.
  */
 public class CsvTradesLoader {
-
+    
+    // Constants according to CSV file
+    final static int TIMESTAMP_COL  = 0;
+    final static int PRICE_COL      = 1;
+    final static int VOLUME_COL     = 2;
+    
     /**
-     * @return a time series from Bitstamp (bitcoin exchange) trades
+     * @return Trade records from file.
      */
-    public static TimeSeries loadBitstampSeries() {
+    public static TimeSeries loadBitstampSeries(String path) {
 
-        // Reading all lines of the CSV file
-        InputStream stream = CsvTradesLoader.class.getClassLoader().getResourceAsStream("bitstamp_trades_from_20131125_usd.csv");
-        CSVReader csvReader = null;
-        List<String[]> lines = null;
-        try {
-            csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',');
-            lines = csvReader.readAll();
-            lines.remove(0); // Removing header line
-        } catch (IOException ioe) {
-            Logger.getLogger(CsvTradesLoader.class.getName()).log(Level.SEVERE, "Unable to load trades from CSV", ioe);
-        } finally {
-            if (csvReader != null) {
-                try {
-                    csvReader.close();
-                } catch (IOException ioe) {
-                }
-            }
-        }
+        List<String[]> lines    = loadFileCSV(path , 1);
+        final int FIRST_LINE    = 0;
+        final int LAST_LINE     = lines.size() - 1;
 
         List<Tick> ticks = null;
         if ((lines != null) && !lines.isEmpty()) {
-
-            // Getting the first and last trades timestamps
-            DateTime beginTime = new DateTime(Long.parseLong(lines.get(0)[0]) * 1000);
-            DateTime endTime = new DateTime(Long.parseLong(lines.get(lines.size() - 1)[0]) * 1000);
+            
+            //// Getting the first and last trades timestamps
+            //// Makes Sure timestamp werent switched.
+            DateTime beginTime  = new DateTime(Long.parseLong(lines.get(FIRST_LINE)[TIMESTAMP_COL]) * 1000);
+            DateTime endTime    = new DateTime(Long.parseLong(lines.get(LAST_LINE)[TIMESTAMP_COL]) * 1000);
             if (beginTime.isAfter(endTime)) {
-                Instant beginInstant = beginTime.toInstant();
-                Instant endInstant = endTime.toInstant();
-                beginTime = new DateTime(endInstant);
-                endTime = new DateTime(beginInstant);
+                Instant beginInstant    = beginTime.toInstant();
+                Instant endInstant      = endTime.toInstant();
+                beginTime               = new DateTime(endInstant);
+                endTime                 = new DateTime(beginInstant);
             }
+            
             // Building the empty ticks (every 300 seconds, yeah welcome in Bitcoin world)
             ticks = buildEmptyTicks(beginTime, endTime, 300);
             // Filling the ticks with trades
             for (String[] tradeLine : lines) {
-                DateTime tradeTimestamp = new DateTime(Long.parseLong(tradeLine[0]) * 1000);
+                DateTime tradeTimestamp = new DateTime(Long.parseLong(tradeLine[TIMESTAMP_COL]) * 1000);
                 for (Tick tick : ticks) {
                     if (tick.inPeriod(tradeTimestamp)) {
-                        double tradePrice = Double.parseDouble(tradeLine[1]);
-                        double tradeAmount = Double.parseDouble(tradeLine[2]);
+                        double tradePrice   = Double.parseDouble(tradeLine[PRICE_COL]);
+                        double tradeAmount  = Double.parseDouble(tradeLine[VOLUME_COL]);
+//                        Decimal tradePrice   = new Decimal(tradeLine[PRICE_COL]);
+//                        Decimal tradeAmount  = new Decimal(tradeLine[VOLUME_COL]);
                         tick.addTrade(tradeAmount, tradePrice);
                     }
                 }
@@ -132,7 +129,7 @@ public class CsvTradesLoader {
     }
 
     public static void main(String args[]) {
-        TimeSeries series = CsvTradesLoader.loadBitstampSeries();
+        TimeSeries series = CsvTradesLoader.loadBitstampSeries("bitstamp_trades_from_20131125_usd.csv");
 
         System.out.println("Series: " + series.getName() + " (" + series.getSeriesPeriodDescription() + ")");
         System.out.println("Number of ticks: " + series.getTickCount());

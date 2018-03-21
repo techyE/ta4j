@@ -35,7 +35,7 @@ public class TradeCountIndicatorTest {
 
     @Before
     public void setUp() {
-        timeSeries = new MockTimeSeries();
+        timeSeries = new MockTimeSeries(30);
         tradeIndicator = new TradeCountIndicator(timeSeries);
     }
 

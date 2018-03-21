@@ -118,7 +118,7 @@ public class CandlestickChart {
         /**
          * Getting time series
          */
-        TimeSeries series = CsvTradesLoader.loadBitstampSeries().subseries(0, Period.hours(6));
+        TimeSeries series = CsvTradesLoader.loadBitstampSeries("bitstamp_trades_from_20131125_usd").subseries(0, Period.hours(6));
         
         /**
          * Creating the OHLC dataset

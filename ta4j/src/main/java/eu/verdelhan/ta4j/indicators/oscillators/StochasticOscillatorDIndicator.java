@@ -34,24 +34,51 @@ import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
  */
 public class StochasticOscillatorDIndicator extends CachedIndicator<Decimal> {
 
-    private Indicator<Decimal> indicator;
+    private SMAIndicator sma;
 
-    public StochasticOscillatorDIndicator(StochasticOscillatorKIndicator k) {
-        this(new SMAIndicator(k, 3));
+    /**
+     * Returns SMA value of given K indicator and timeFrame
+     * @param k         Stochastic Oscillator K value
+     * @param timeFrame Time frame on which average will be calculated
+     */
+    public StochasticOscillatorDIndicator(StochasticOscillatorKIndicator k, int timeFrame) {
+        super(k);
+        sma = new SMAIndicator(k, timeFrame);
     }
 
-    public StochasticOscillatorDIndicator(Indicator<Decimal> indicator) {
-        super(indicator);
-        this.indicator = indicator;
+    /**
+     * Returns SMA value of given K indicator and timeFrame
+     * @param k         Stochastic Oscillator K value
+     */
+    public StochasticOscillatorDIndicator(StochasticOscillatorKIndicator k) {
+        this(k, 3);
+    }
+
+    /**
+     * Returns SMA value of given K indicator and timeFrame
+     * @param d         Stochastic Oscillator D value
+     * @param timeFrame Time frame on which average will be calculated
+     */
+    public StochasticOscillatorDIndicator(StochasticOscillatorDIndicator d, int timeFrame) {
+        super(d);
+        sma = new SMAIndicator(d, timeFrame);
+    }
+
+    /**
+     * Returns SMA value of given K indicator and timeFrame
+     * @param d         Stochastic Oscillator D value
+     */
+    public StochasticOscillatorDIndicator(StochasticOscillatorDIndicator d) {
+        this(d, 3);
     }
 
     @Override
     protected Decimal calculate(int index) {
-        return indicator.getValue(index);
+        return sma.getValue(index);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " " + indicator;
+        return getClass().getSimpleName() + " " + sma;
     }
 }

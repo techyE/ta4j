@@ -116,20 +116,32 @@ public class TradingRecord {
     public final void operate(int index) {
         operate(index, Decimal.NaN, Decimal.NaN);
     }
-    
+
+    /**
+     * Operates an order in the trading record.
+     * @see public void operate(int index)
+     */
+    public final void operate(int index , Decimal price, Decimal amount )
+    {
+        operate(index, price, amount , false);
+    }
+
     /**
      * Operates an order in the trading record.
      * @param index the index to operate the order
      * @param price the price of the order
      * @param amount the amount to be ordered
+     * @param artificial indicates if trade is real or made up just in order to add last possible calculation.
      */
-    public final void operate(int index, Decimal price, Decimal amount) {
-        if (currentTrade.isClosed()) {
+    public final void operate(int index, Decimal price, Decimal amount , boolean artificial)
+    {
+        if (currentTrade.isClosed())
+        {
             // Current trade closed, should not occur
             throw new IllegalStateException("Current trade should not be closed");
         }
         boolean newOrderWillBeAnEntry = currentTrade.isNew();
-        Order newOrder = currentTrade.operate(index, price, amount);
+        Order newOrder = currentTrade.operate(index, price, amount , artificial);
         recordOrder(newOrder, newOrderWillBeAnEntry);
     }
     
@@ -215,8 +227,14 @@ public class TradingRecord {
     /**
      * @return the last order recorded
      */
-    public Order getLastOrder() {
-        if (!orders.isEmpty()) {
+    public Order getLastOrder()
+    {
+        // When There are Orders, Get the last one.
+        if (!orders.isEmpty())
+        {
+            // When last order is a fake one, go one order backwards.
+            if (orders.get(orders.size() - 1).getArtificial())
+                return orders.get(orders.size() - 2);
             return orders.get(orders.size() - 1);
         }
         return null;

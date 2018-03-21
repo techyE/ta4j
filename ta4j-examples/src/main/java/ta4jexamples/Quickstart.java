@@ -51,7 +51,7 @@ public class Quickstart {
     public static void main(String[] args) {
 
         // Getting a time series (from any provider: CSV, web service, etc.)
-        TimeSeries series = CsvTradesLoader.loadBitstampSeries();
+        TimeSeries series = CsvTradesLoader.loadBitstampSeries("bitstamp_trades_from_20131125_usd.csv");
 
 
         // Getting the close price of the ticks

@@ -63,4 +63,8 @@ public class EMAIndicator extends RecursiveCachedIndicator<Decimal> {
         Decimal emaPrev = getValue(index - 1);
         return indicator.getValue(index).minus(emaPrev).multipliedBy(multiplier).plus(emaPrev);
     }
+
+    public int getTimeFrame() {
+        return timeFrame;
+    }
 }

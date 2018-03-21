@@ -62,7 +62,7 @@ public class StochasticOscillatorDIndicatorTest {
 
         StochasticOscillatorKIndicator sof = new StochasticOscillatorKIndicator(data, 14);
         SMAIndicator sma = new SMAIndicator(sof, 3);
-        StochasticOscillatorDIndicator sos = new StochasticOscillatorDIndicator(sma);
+        StochasticOscillatorDIndicator sos = new StochasticOscillatorDIndicator(sof);
 
         assertEquals(sma.getValue(0), sos.getValue(0));
         assertEquals(sma.getValue(1), sos.getValue(1));

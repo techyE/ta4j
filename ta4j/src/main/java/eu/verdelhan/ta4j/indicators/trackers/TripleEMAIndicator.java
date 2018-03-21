@@ -49,4 +49,8 @@ public class TripleEMAIndicator extends CachedIndicator<Decimal> {
         EMAIndicator emaEmaEma = new EMAIndicator(emaEma, timeFrame);
         return Decimal.THREE.multipliedBy(ema.getValue(index).minus(emaEma.getValue(index))).plus(emaEmaEma.getValue(index));
     }
+
+    public int getTimeFrame() {
+        return timeFrame;
+    }
 }

@@ -28,9 +28,10 @@ import eu.verdelhan.ta4j.Order.OrderType;
  * Pair of two {@link Order orders}.
  * <p>
  * The exit order has the complement type of the entry order.<br>
- * I.e.:
- *   entry == BUY --> exit == SELL
+ * I.e.:<br>
+ *   entry == BUY --> exit == SELL<br>
  *   entry == SELL --> exit == BUY
+ * </p>
  */
 public class Trade {
 
@@ -111,24 +112,37 @@ public class Trade {
     public Order operate(int index) {
         return operate(index, Decimal.NaN, Decimal.NaN);
     }
-
+    
+    /**
+     * Operates the trade at the index-th position
+     * @see Order operate(int index)
+     * @return the order
+     */
+    public final Order operate(int index , Decimal price, Decimal amount)
+    {
+        return operate(index, price, amount , false);
+    }
+    
     /**
      * Operates the trade at the index-th position
      * @param index the tick index
      * @param price the price
      * @param amount the amount
+     * @param artificial indicates if trade is real or made up just in order to add last possible calculation.
      * @return the order
      */
-    public Order operate(int index, Decimal price, Decimal amount) {
+    public Order operate(int index, Decimal price, Decimal amount , boolean artificial)
+    {
         Order order = null;
-        if (isNew()) {
-            order = new Order(index, startingType, price, amount);
+        if (isNew())
+        {
+            order = new Order(index, startingType, price, amount , artificial);
             entry = order;
         } else if (isOpened()) {
             if (index < entry.getIndex()) {
                 throw new IllegalStateException("The index i is less than the entryOrder index");
             }
-            order = new Order(index, startingType.complementType(), price, amount);
+            order = new Order(index, startingType.complementType(), price, amount, artificial);
             exit = order;
         }
         return order;

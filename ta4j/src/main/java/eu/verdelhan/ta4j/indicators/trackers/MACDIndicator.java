@@ -27,8 +27,18 @@ import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.indicators.CachedIndicator;
 
 /**
- * Moving average convergence divergence (MACDIndicator) indicator.
  * <p>
+ * Name: Moving Average Convergence Divergence Indicator.       <br>
+ * Type: Lagging.                                               <br>
+ * Indicates when 2 averages crossing each other.               <br>
+ * Used the stock prices difference by absolute stock prices.   <br>
+ *<br>
+ * When indicator > 0                       - bullish trend.    <br>
+ * When indicator < 0                       - bearish trend.    <br>
+ * When indicator cross up indicatorAvg     - up ticks.         <br>
+ * When indicator cross down indicatorAvg   - down ticks.       <br>
+ *
+ * </p>
  */
 public class MACDIndicator extends CachedIndicator<Decimal> {
 
@@ -36,6 +46,12 @@ public class MACDIndicator extends CachedIndicator<Decimal> {
 
     private final EMAIndicator longTermEma;
 
+    /**
+     *
+     * @param indicator         Indicator on which MACD will be calculated
+     * @param shortTimeFrame    EMA short time frame
+     * @param longTimeFrame     EMA long time frame
+     */
     public MACDIndicator(Indicator<Decimal> indicator, int shortTimeFrame, int longTimeFrame) {
         super(indicator);
         if (shortTimeFrame > longTimeFrame) {
@@ -45,8 +61,31 @@ public class MACDIndicator extends CachedIndicator<Decimal> {
         longTermEma = new EMAIndicator(indicator, longTimeFrame);
     }
 
+    /**
+     *
+     * @param shortTermEma  EMAIndicator -  Short EMA indicator
+     * @param longTermEma   EMAIndicator -  Long EMA indicator
+     */
+    public MACDIndicator(EMAIndicator shortTermEma, EMAIndicator longTermEma)
+    {
+        super(shortTermEma);    // Receives the time series in order to make calcs.
+        if (shortTermEma.getTimeFrame() > longTermEma.getTimeFrame()) {
+            throw new IllegalArgumentException("Long term period count must be greater than short term period count");
+        }
+        this.shortTermEma   = shortTermEma;
+        this.longTermEma    = longTermEma;
+    }
+
     @Override
     protected Decimal calculate(int index) {
         return shortTermEma.getValue(index).minus(longTermEma.getValue(index));
+    }
+
+    public int getLongTermEma() {
+        return longTermEma.getTimeFrame();
+    }
+
+    public int getShortTermEma() {
+        return shortTermEma.getTimeFrame();
     }
 }

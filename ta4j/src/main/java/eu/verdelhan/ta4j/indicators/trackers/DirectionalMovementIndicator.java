@@ -29,32 +29,54 @@ import eu.verdelhan.ta4j.indicators.helpers.DirectionalDownIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.DirectionalUpIndicator;
 
 /**
- * Directional movement indicator.
  * <p>
+ * Name: Directional movement indicator.      <br>
+ * Indicator Sign: DX
+ * Type: Lagging.
+ * </p>
  */
 public class DirectionalMovementIndicator extends CachedIndicator<Decimal>{
 
     private final int timeFrame;
-    private final DirectionalUpIndicator dup;
-    private final DirectionalDownIndicator ddown;
+    private final DirectionalUpIndicator dirUp;
+    private final DirectionalDownIndicator dirDown;
 
     public DirectionalMovementIndicator(TimeSeries series, int timeFrame) {
         super(series);
         this.timeFrame = timeFrame;
-        dup = new DirectionalUpIndicator(series, timeFrame);
-        ddown = new DirectionalDownIndicator(series, timeFrame);
+        this.dirUp     = new DirectionalUpIndicator(series, timeFrame);
+        this.dirDown   = new DirectionalDownIndicator(series, timeFrame);
+    }
+
+    public DirectionalMovementIndicator(DirectionalUpIndicator dirUp, DirectionalDownIndicator dirDown) {
+        super(dirUp);
+
+        if (dirUp.getTimeFrame() != dirDown.getTimeFrame())
+            try {throw new Exception("Received Indicators with different timeFrames. Cause to bad calculations");}
+            catch (Exception e) {e.printStackTrace();}
+
+        this.timeFrame = dirUp.getTimeFrame();
+        this.dirUp     = dirUp;
+        this.dirDown   = dirDown;
     }
 
     @Override
-    protected Decimal calculate(int index) {
-        Decimal dupValue = dup.getValue(index);
-        Decimal ddownValue = ddown.getValue(index);
-        Decimal difference = dupValue.minus(ddownValue);
-        return dupValue.minus(ddownValue).abs().dividedBy(dupValue.plus(ddownValue)).multipliedBy(Decimal.HUNDRED);
+    protected Decimal calculate(int index)
+    {
+        if (index == 0)
+            return Decimal.ZERO;
+
+        Decimal dirUpVal    = dirUp.getValue(index);
+        Decimal dirDownVal  = dirDown.getValue(index);
+        return dirUpVal.minus(dirDownVal).abs().dividedBy(dirUpVal.plus(dirDownVal)).multipliedBy(Decimal.HUNDRED);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " timeFrame: " + timeFrame;
+        return getClass().getSimpleName() + " " + timeFrame;
+    }
+
+    public int getTimeFrame() {
+        return timeFrame;
     }
 }

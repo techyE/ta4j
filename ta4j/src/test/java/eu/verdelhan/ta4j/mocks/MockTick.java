@@ -28,7 +28,9 @@ import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.Tick;
 
 /**
+ * <p>
  * A mock tick with sample data.
+ * </p>
  */
 public class MockTick extends Tick {
 
@@ -37,7 +39,7 @@ public class MockTick extends Tick {
     private int trades = 0;
 
     public MockTick(double closePrice) {
-        this(new DateTime(), closePrice);
+        super(new DateTime(), 0, 0, 0, closePrice, 0);
     }
 
     public MockTick(double closePrice, double volume) {
@@ -49,7 +51,7 @@ public class MockTick extends Tick {
     }
 
     public MockTick(double openPrice, double closePrice, double maxPrice, double minPrice) {
-        super(new DateTime(), openPrice, maxPrice, minPrice, closePrice, 1);
+        super(new DateTime(), openPrice, maxPrice, minPrice, closePrice, 0);
     }
     
     public MockTick(double openPrice, double closePrice, double maxPrice, double minPrice, double volume) {

@@ -43,10 +43,20 @@ public class DoubleEMAIndicator extends CachedIndicator<Decimal> {
         this.ema = new EMAIndicator(indicator, timeFrame);
     }
 
+    public DoubleEMAIndicator(EMAIndicator emaIndicator) {
+        super(emaIndicator);
+        this.timeFrame = emaIndicator.getTimeFrame();
+        this.ema = emaIndicator;
+    }
+
     @Override
     protected Decimal calculate(int index) {
         EMAIndicator emaEma = new EMAIndicator(ema, timeFrame);
         return ema.getValue(index).multipliedBy(Decimal.TWO)
                 .minus(emaEma.getValue(index));
+    }
+
+    public int getTimeFrame(){
+        return timeFrame;
     }
 }
