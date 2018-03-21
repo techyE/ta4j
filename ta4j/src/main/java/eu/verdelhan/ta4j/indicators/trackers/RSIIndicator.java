@@ -24,9 +24,11 @@ package eu.verdelhan.ta4j.indicators.trackers;
 
 import eu.verdelhan.ta4j.Indicator;
 import eu.verdelhan.ta4j.Decimal;
+import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.CachedIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.AverageGainIndicator;
 import eu.verdelhan.ta4j.indicators.helpers.AverageLossIndicator;
+import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 
 /**
  * Relative strength index indicator.
@@ -39,6 +41,14 @@ public class RSIIndicator extends CachedIndicator<Decimal> {
     private AverageLossIndicator averageLossIndicator;
 
     private final int timeFrame;
+
+    public RSIIndicator(TimeSeries series, int timeFrame) {
+        super(series);
+        this.timeFrame = timeFrame;
+        ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
+        averageGainIndicator = new AverageGainIndicator(closePrice, timeFrame);
+        averageLossIndicator = new AverageLossIndicator(closePrice, timeFrame);
+    }
 
     public RSIIndicator(Indicator<Decimal> indicator, int timeFrame) {
         super(indicator);
@@ -69,5 +79,9 @@ public class RSIIndicator extends CachedIndicator<Decimal> {
         Decimal averageGain = averageGainIndicator.getValue(index);
         Decimal averageLoss = averageLossIndicator.getValue(index);
         return averageGain.dividedBy(averageLoss);
+    }
+
+    public int getTimeFrame() {
+        return timeFrame;
     }
 }

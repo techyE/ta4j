@@ -65,6 +65,22 @@ public class RSIIndicatorTest {
     }
 
     @Test
+    public void RSIUsingTimeFrame14TimeSeries() {
+        RSIIndicator rsi = new RSIIndicator(data, 14);
+
+        assertDecimalEquals(rsi.getValue(15), 62.7451);
+        assertDecimalEquals(rsi.getValue(16), 66.6667);
+        assertDecimalEquals(rsi.getValue(17), 75.2294);
+        assertDecimalEquals(rsi.getValue(18), 71.9298);
+        assertDecimalEquals(rsi.getValue(19), 73.3333);
+        assertDecimalEquals(rsi.getValue(20), 77.7778);
+        assertDecimalEquals(rsi.getValue(21), 74.6667);
+        assertDecimalEquals(rsi.getValue(22), 77.8523);
+        assertDecimalEquals(rsi.getValue(23), 81.5642);
+        assertDecimalEquals(rsi.getValue(24), 85.2459);
+    }
+
+    @Test
     public void RSIFirstValueShouldBeZero() {
         RSIIndicator rsi = new RSIIndicator(new ClosePriceIndicator(data), 14);
 

@@ -58,4 +58,7 @@ public class SMAIndicator extends CachedIndicator<Decimal> {
         return getClass().getSimpleName() + " timeFrame: " + timeFrame;
     }
 
+    public int getTimeFrame() {
+        return timeFrame;
+    }
 }

@@ -34,7 +34,6 @@ public class WilderSmoothIndicator  extends CachedIndicator<Decimal> {
         }
         Decimal nbPeriods           = Decimal.valueOf(timeFrame);
         Decimal nbPeriodsMinusOne   = Decimal.valueOf(timeFrame - 1);
-        System.out.println(index + " " + indicator.getValue(index));
         return getValue(index-1).multipliedBy(nbPeriodsMinusOne).plus(indicator.getValue(index)).dividedBy(nbPeriods);
     }
     
