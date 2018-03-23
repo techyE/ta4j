@@ -23,7 +23,7 @@ val chartsLib   = Seq(  "org.jfree" % "jfreechart" % "1.0.19",
 val mathLib     = "org.apache.commons" % "commons-math3" % "3.0"
 
 val testsLib    = Seq(  "junit" % "junit" % "4.12",
-                        "org.scalatest" % "scalatest_2.11" % "3.0.0-M15",
+                        "org.scalatest" %% "scalatest" % "3.2.0-SNAP10",
                         "org.scala-lang" % "scala-reflect" % "2.12.4")
 
 

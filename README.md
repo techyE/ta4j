@@ -1,6 +1,6 @@
-# ta4j [![Build Status](https://travis-ci.org/mdeverdelhan/ta4j.png?branch=master)](https://travis-ci.org/mdeverdelhan/ta4j)
+# ta4JS [![Build Status](https://travis-ci.org/techyE/ta4j.svg?branch=master)](https://travis-ci.org/techyE/ta4j)
 
-***Technical Analysis For Java***
+***Technical Analysis For Java and Scala***
 
 ![Ta4 main chart](https://raw.githubusercontent.com/wiki/mdeverdelhan/ta4j/img/ta4j_main_chart.png)
 
