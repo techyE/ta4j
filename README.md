@@ -1,4 +1,4 @@
-# ta4JS [![Build Status](https://travis-ci.org/techyE/ta4j.svg?branch=master)](https://travis-ci.org/techyE/ta4j)
+# ta4j [![Build Status](https://travis-ci.org/techyE/ta4j.svg?branch=master)](https://travis-ci.org/techyE/ta4j)
 
 ***Technical Analysis For Java and Scala***
 
