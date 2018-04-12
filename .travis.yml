@@ -3,4 +3,6 @@ scala:
    - 2.12.4
 jdk:
   - oraclejdk7
+  - oraclejdk8
+  - oraclejdk9
 sudo: false
