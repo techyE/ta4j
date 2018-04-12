@@ -28,13 +28,6 @@ val testsLib            = Seq(  "junit" % "junit" % "4.12",
 
 val scalaCompilerLib    = "org.scala-lang" % "scala-reflect" % "2.12.4"
 
-
-lazy val root = (project in file("."))
-.aggregate("ta4j", "ta4jExamples")
-.settings(
-    name := "ta4jTechyE",
-    projectSettings)
-
 lazy val ta4j = (project in file("ta4j"))
 .settings(
     libraryDependencies += timeLib,
@@ -54,6 +47,11 @@ lazy val ta4jExamples = (project in file("ta4j-examples"))
 .dependsOn(ta4j)
 .settings(projectSettings)
 
+lazy val root = (project in file("."))
+.aggregate(ta4j, ta4jExamples)
+.settings(
+    name := "ta4jTechyE",
+    projectSettings)
 
 
 //libraryDependencies += "commons-lang" % "commons-lang" % "2.6"
